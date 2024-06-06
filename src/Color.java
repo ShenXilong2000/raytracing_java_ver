@@ -14,8 +14,9 @@ public class Color extends Vec3{
     }
 
     public Color(Vec3 v) {
-        new Color(v.x(), v.y(), v.z());
+        super(v.x, v.y, v.z);
     }
+
     public Color(double x, double y, double z) {
         super(x, y, z);
     }
@@ -32,19 +33,17 @@ public class Color extends Vec3{
         return (int) (255.99 * this.z());
     }
 
-    @Override
-    public Color add(Vec3 v) {
-        return (Color) super.add(v) ;
+
+    public Color add(Color c) {
+        return new Color(super.add(c)) ;
     }
 
-    @Override
-    public Color subtract(Vec3 v) {
-        return (Color) super.subtract(v);
+    public Color subtract(Color c) {
+        return new Color(super.subtract(c));
     }
 
-    @Override
     public Color multiply(double t) {
-        return (Color) super.multiply(t);
+        return new Color(super.multiply(t));
     }
 
     public void writeColor() {

@@ -4,10 +4,22 @@ import java.awt.image.BufferedImage;
 
 public class Main {
 
-    private static Color rayColor(Ray r) {
-        Vec3 unitDirection = r.direction().unitVector();
+    private static boolean hitSphere(Vec3 center, double radius, Ray ray) {
+        Vec3 oc = center.subtract(ray.origin());
+        double a = ray.direction().dot(ray.direction());
+        double b = -2.0 * ray.direction().dot(oc);
+        double c = oc.dot(oc) - radius * radius;
+        double discriminant = b*b - 4*a*c;
+        return discriminant >= 0;
+    }
+
+    private static Color rayColor(Ray ray) {
+        if (hitSphere(new Vec3(0, 0, -1), 0.5, ray)) {
+            return Color.RED;
+        }
+        Vec3 unitDirection = ray.direction().unitVector();
         double a = 0.5 * (unitDirection.y() + 1.0);
-        return Color.BLACK.multiply(1.0 - a).add(new Color(0.5, 0.7, 1.0).multiply(a));
+        return new Color(1.0, 1.0, 1.0).multiply(1.0 - a).add(new Color(0.5, 0.7, 1.0).multiply(a));
     }
 
 
@@ -47,7 +59,7 @@ public class Main {
 
         for (int j = 0; j < imageHeight; j++) {
 
-            System.out.println("\rScanlines remaining: " + (imageHeight - j) + " ");
+            System.out.print("\rScanlines remaining: " + (imageHeight - j) + " ");
             System.out.flush();
 
             for (int i = 0; i < imageWidth; i++) {

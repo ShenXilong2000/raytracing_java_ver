@@ -3,9 +3,9 @@
  * @Date 2024/5/30 17:41
  **/
 public class Vec3 {
-    private final double x;
-    private final double y;
-    private final double z;
+    protected final double x;
+    protected final double y;
+    protected final double z;
 
     public static final Vec3 zero = new Vec3(0.0, 0.0, 0.0);
 
