@@ -7,8 +7,7 @@ public class Main {
     private static Vec3 rayColor(Ray r) {
         Vec3 unitDirection = r.direction().unitVector();
         double a = 0.5 * (unitDirection.y() + 1.0);
-        return unitDirection;
-//        return new Vec3(1.0, 1.0, 1.0).multiply(1.0 - a).add(new Vec3(0.5, 0.7, 1.0).multiply(a));
+        return new Vec3(1.0, 1.0, 1.0).multiply(1.0 - a).add(new Vec3(0.5, 0.7, 1.0).multiply(a));
     }
 
 
@@ -32,15 +31,15 @@ public class Main {
         Vec3 viewportU = new Vec3(viewportWidth, 0,0);
         Vec3 viewportV = new Vec3(0, -viewportHeight, 0);
 
-        // 计算横向和竖向视口边缘的单位向量(像素单位)
-        Vec3 pixelDeltaU = viewportU.divide(viewportWidth);
-        Vec3 pixelDeltaV = viewportV.divide(viewportHeight);
+        // 计算水平方向和垂直视口边缘的向量
+        Vec3 pixelDeltaU = viewportU.divide(imageWidth);
+        Vec3 pixelDeltaV = viewportV.divide(imageHeight);
 
         // 计算左上角的像素
         Vec3 viewportUpperLeft = cameraCenter.subtract(new Vec3(0, 0, focalLength))
                                                 .subtract(viewportU.divide(2))
                                                 .subtract(viewportV.divide(2));
-        Vec3 pixel00_loc = viewportUpperLeft.add(pixelDeltaU.add(pixelDeltaV).divide(2));
+        Vec3 pixel00_loc = pixelDeltaU.add(pixelDeltaV).divide(2).add(viewportUpperLeft);
 
         // Renderx
 
@@ -48,7 +47,7 @@ public class Main {
 
         for (int j = 0; j < imageHeight; j++) {
 
-            System.out.print("\rScanlines remaining: " + (imageHeight - j) + " ");
+            System.out.println("\rScanlines remaining: " + (imageHeight - j) + " ");
             System.out.flush();
 
             for (int i = 0; i < imageWidth; i++) {

@@ -7,7 +7,7 @@ public class Vec3 {
     private final double y;
     private final double z;
 
-    public static final Vec3 zero = new Vec3(0, 0, 0);
+    public static final Vec3 zero = new Vec3(0.0, 0.0, 0.0);
 
     public Vec3() {
         this.x = 0.0;
