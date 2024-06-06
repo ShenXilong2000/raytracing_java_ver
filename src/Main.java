@@ -4,10 +4,10 @@ import java.awt.image.BufferedImage;
 
 public class Main {
 
-    private static Vec3 rayColor(Ray r) {
+    private static Color rayColor(Ray r) {
         Vec3 unitDirection = r.direction().unitVector();
         double a = 0.5 * (unitDirection.y() + 1.0);
-        return new Vec3(1.0, 1.0, 1.0).multiply(1.0 - a).add(new Vec3(0.5, 0.7, 1.0).multiply(a));
+        return Color.BLACK.multiply(1.0 - a).add(new Color(0.5, 0.7, 1.0).multiply(a));
     }
 
 
@@ -56,8 +56,8 @@ public class Main {
                 Vec3 rayDirection = pixelCenter.subtract(cameraCenter);// 视线方向
                 Ray r = new Ray(cameraCenter, rayDirection);
 
-                Vec3 color = rayColor(r);
-                image.setRGB(i, j, Color.getRgb(color));
+                Color color = rayColor(r);
+                image.setRGB(i, j, color.getRgb());
             }
         }
 

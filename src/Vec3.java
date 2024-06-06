@@ -33,18 +33,6 @@ public class Vec3 {
         return this.z;
     }
 
-    public int r() {
-        return (int) (255.99 * this.x);
-    }
-
-    public int g() {
-        return (int) (255.99 * this.y);
-    }
-
-    public int b() {
-        return (int) (255.99 * this.z);
-    }
-
     public Vec3 add(Vec3 v) {
         return new Vec3(this.x + v.x, this.y + v.y, this.z + v.z);
     }
