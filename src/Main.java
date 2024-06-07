@@ -4,19 +4,30 @@ import java.awt.image.BufferedImage;
 
 public class Main {
 
-    private static boolean hitSphere(Vec3 center, double radius, Ray ray) {
+    private static double hitSphere(Vec3 center, double radius, Ray ray) {
         Vec3 oc = center.subtract(ray.origin());
         double a = ray.direction().dot(ray.direction());
         double b = -2.0 * ray.direction().dot(oc);
         double c = oc.dot(oc) - radius * radius;
         double discriminant = b*b - 4*a*c;
-        return discriminant >= 0;
+
+        if (discriminant < 0) {
+            return -1.0;
+        } else {
+            return (-b - Math.sqrt(discriminant)) / (2.0 * a);
+        }
     }
 
     private static Color rayColor(Ray ray) {
-        if (hitSphere(new Vec3(0, 0, -1), 0.5, ray)) {
-            return Color.RED;
+        Vec3 sphereCenter = new Vec3(0, 0, -1);
+        double t = hitSphere(sphereCenter, 0.5, ray);
+        if (t > 0.0) {
+            Vec3 n = ray.at(t).subtract(sphereCenter).unitVector();
+            // 将法线控制在（0, 1）
+            return new Color(n.x+1, n.y+1, n.z+1).multiply(0.5);
         }
+
+
         Vec3 unitDirection = ray.direction().unitVector();
         double a = 0.5 * (unitDirection.y() + 1.0);
         return new Color(1.0, 1.0, 1.0).multiply(1.0 - a).add(new Color(0.5, 0.7, 1.0).multiply(a));
