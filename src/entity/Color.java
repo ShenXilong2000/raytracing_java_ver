@@ -1,3 +1,5 @@
+package entity;
+
 /**
  * @Author sxl
  * @Date 2024/6/3 11:32

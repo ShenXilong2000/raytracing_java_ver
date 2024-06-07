@@ -1,3 +1,6 @@
+import entity.Color;
+import entity.Ray;
+import entity.Vec3;
 import utils.FileUtils;
 
 import java.awt.image.BufferedImage;
@@ -24,7 +27,7 @@ public class Main {
         if (t > 0.0) {
             Vec3 n = ray.at(t).subtract(sphereCenter).unitVector();
             // 将法线控制在（0, 1）
-            return new Color(n.x+1, n.y+1, n.z+1).multiply(0.5);
+            return new Color(n.x()+1, n.y()+1, n.z()+1).multiply(0.5);
         }
 
 
