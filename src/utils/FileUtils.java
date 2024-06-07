@@ -37,10 +37,10 @@ public class FileUtils {
 
 
     public static void saveFileToJPG(String fileName, BufferedImage image) {
-        File file = new File("images/" + fileName + ".jpg");
+        File file = new File("images/" + fileName + ".bmp");
         // 将图像写入文件
         try {
-            ImageIO.write(image, "jpg", file);
+            ImageIO.write(image, "BMP", file);
             System.out.println("Image has been written to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred while writing the image.");
