@@ -79,4 +79,8 @@ public class Vec3 {
     public Vec3 unitVector() {
         return this.divide(this.length());
     }
+
+    public Vec3 oppositeVector () {
+        return zero.subtract(this);
+    }
 }
