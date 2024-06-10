@@ -1,9 +1,6 @@
 package entity.object;
 
-import entity.HitRecord;
-import entity.Hittable;
-import entity.Ray;
-import entity.Vec3;
+import entity.*;
 
 /**
  * @Author sxl
@@ -19,7 +16,8 @@ public class Sphere extends Hittable {
     }
 
     @Override
-    public boolean hit(Ray ray, double rayTMin, double rayTMax, HitRecord rec) {
+    public HitRecord hit(Ray ray, Interval rayT) {
+        HitRecord rec = new HitRecord();
         Vec3 oc = center.subtract(ray.origin());
         double a = ray.direction().lengthSquared();
         double h = ray.direction().dot(oc);
@@ -27,17 +25,17 @@ public class Sphere extends Hittable {
 
         double discriminant = h*h - a*c;
         if (discriminant < 0) {
-            return false;
+            return null;
         }
 
         double sqrtd = Math.sqrt(discriminant);
 
         // 查找可接受范围内的根
         double root = (h - sqrtd) / a;
-        if (root <= rayTMin || root >= rayTMax) {
+        if (!rayT.surrounds(root)) {
             root = (h + sqrtd) / a;
-            if (root <= rayTMin || root >= rayTMax) {
-                return false;
+            if (!rayT.surrounds(root)) {
+                return null;
             }
         }
 
@@ -46,6 +44,6 @@ public class Sphere extends Hittable {
         Vec3 outwardNormal = rec.p.subtract(center).divide(radius);
         rec.setFaceNormal(ray, outwardNormal);
 
-        return true;
+        return rec;
     }
 }

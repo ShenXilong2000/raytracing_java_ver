@@ -1,35 +1,19 @@
-import entity.Color;
-import entity.Ray;
-import entity.Vec3;
+import entity.*;
+import entity.object.HittableList;
+import entity.object.Sphere;
+import utils.CommonUtils;
 import utils.FileUtils;
 
 import java.awt.image.BufferedImage;
 
 public class Main {
 
-    private static double hitSphere(Vec3 center, double radius, Ray ray) {
-        Vec3 oc = center.subtract(ray.origin());
-        double a = ray.direction().lengthSquared();
-        double h = ray.direction().dot(oc);
-        double c = oc.lengthSquared() - radius * radius;
-        double discriminant = h*h - a*c;
 
-        if (discriminant < 0) {
-            return -1.0;
-        } else {
-            return (h - Math.sqrt(discriminant)) / a;
+    private static Color rayColor(Ray ray, Hittable world) {
+        HitRecord hitRecord = world.hit(ray, new Interval(0, CommonUtils.INFINITY));
+        if (hitRecord != null) {
+            return new Color(hitRecord.normal.add(Color.BLACK).multiply(0.5));
         }
-    }
-
-    private static Color rayColor(Ray ray) {
-        Vec3 sphereCenter = new Vec3(0, 0, -1);
-        double t = hitSphere(sphereCenter, 0.5, ray);
-        if (t > 0.0) {
-            Vec3 n = ray.at(t).subtract(sphereCenter).unitVector();
-            // 将法线控制在（0, 1）
-            return new Color(n.x()+1, n.y()+1, n.z()+1).multiply(0.5);
-        }
-
 
         Vec3 unitDirection = ray.direction().unitVector();
         double a = 0.5 * (unitDirection.y() + 1.0);
@@ -46,6 +30,11 @@ public class Main {
         // 计算画面高度，确保高度至少为1
         int imageHeight = (int) (imageWidth / aspectRatio);
         imageHeight = Math.max(imageHeight, 1);
+
+        // world
+        HittableList world = new HittableList();
+        world.add(new Sphere(new Vec3(0, 0, -1), 0.5));
+        world.add(new Sphere(new Vec3(0, -100.5, -1), 100));
 
         // Camera
         double focalLength = 1.0;
@@ -68,7 +57,6 @@ public class Main {
         Vec3 pixel00_loc = pixelDeltaU.add(pixelDeltaV).divide(2).add(viewportUpperLeft);
 
         // Renderx
-
         BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
 
         for (int j = 0; j < imageHeight; j++) {
@@ -82,7 +70,7 @@ public class Main {
                 Vec3 rayDirection = pixelCenter.subtract(cameraCenter);// 视线方向
                 Ray r = new Ray(cameraCenter, rayDirection);
 
-                Color color = rayColor(r);
+                Color color = rayColor(r, world);
                 image.setRGB(i, j, color.getRgb());
             }
         }

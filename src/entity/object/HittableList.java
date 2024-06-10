@@ -2,6 +2,7 @@ package entity.object;
 
 import entity.HitRecord;
 import entity.Hittable;
+import entity.Interval;
 import entity.Ray;
 
 import java.util.ArrayList;
@@ -27,19 +28,18 @@ public class HittableList extends Hittable {
     }
 
     @Override
-    public boolean hit(Ray ray, double rayTMin, double rayTMax, HitRecord rec) {
-        HitRecord tempRec = new HitRecord();
-        Boolean hitAnything = false;
-        double closestSoFar = rayTMax;
+    public HitRecord hit(Ray ray, Interval rayT) {
+        HitRecord hitRecord = null;
+        double closestSoFar = rayT.max;
 
         for (Hittable object : objects) {
-            if (object.hit(ray, rayTMin, closestSoFar, tempRec)) {
-                hitAnything = true;
+            HitRecord tempRec = object.hit(ray, new Interval(rayT.min, closestSoFar));
+            if (tempRec != null) {
                 closestSoFar = tempRec.t;
-                rec = tempRec;
+                hitRecord = tempRec;
             }
         }
 
-        return hitAnything;
+        return hitRecord;
     }
 }

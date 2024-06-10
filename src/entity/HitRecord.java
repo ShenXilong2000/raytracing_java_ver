@@ -1,7 +1,5 @@
 package entity;
 
-import entity.Vec3;
-
 /**
  * @Author sxl
  * @Date 2024/6/7 16:45
@@ -14,8 +12,7 @@ public class HitRecord {
 
     // outwardNormal 法线已经归一化
     public void setFaceNormal(Ray r, Vec3 outwardNormal) {
-        frontFace = r.direction().dot(outwardNormal) < 0;
-        normal = frontFace ? outwardNormal : outwardNormal.oppositeVector();
-
+        this.frontFace = r.direction().dot(outwardNormal) < 0;
+        this.normal = frontFace ? outwardNormal : outwardNormal.oppositeVector();
     }
 }

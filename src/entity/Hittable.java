@@ -8,7 +8,7 @@ public abstract class Hittable {
     public Hittable() {
     }
 
-    public boolean hit(Ray ray, double rayTMin, double rayTMax, HitRecord rec) {
-        return false;
+    public HitRecord hit(Ray ray, Interval rayT) {
+        return null;
     }
 }
