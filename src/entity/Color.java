@@ -11,6 +11,8 @@ public class Color extends Vec3{
     public static final Color BLUE =    new Color(0.0, 0.0, 1.0);
     public static final Color WHITE =   new Color(0.0, 0.0, 0.0);
 
+    private static final Interval interval = new Interval(0.000, 0.999);
+
     public Color() {
         new Color(0.0, 0.0, 0.0);
     }
@@ -24,15 +26,15 @@ public class Color extends Vec3{
     }
 
     public int r() {
-        return (int) (255.99 * this.x());
+        return (int) (255 * interval.clamp(this.x()));
     }
 
     public int g() {
-        return (int) (255.99 * this.y());
+        return (int) (255 * interval.clamp(this.y()));
     }
 
     public int b() {
-        return (int) (255.99 * this.z());
+        return (int) (255 * interval.clamp(this.z()));
     }
 
 

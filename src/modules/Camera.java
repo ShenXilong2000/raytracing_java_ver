@@ -11,14 +11,16 @@ import java.awt.image.BufferedImage;
  * @Date 2024/6/12 15:20
  **/
 public class Camera {
-    private int imageHeight;    // Rendered image height
-    private Vec3 center;        // Camera center
-    private Vec3 pixel00_loc;   // Location of pixel 0, 0
-    private Vec3 pixelDeltaU;   // Offset of pixel to the right
-    private Vec3 pixelDeltaV;   // Offset of pixel below
+    private int imageHeight;            // Rendered image height
+    private double pixelSampleScale;    // Color scale factor for a sum of pixel samples
+    private Vec3 center;                // Camera center
+    private Vec3 pixel00_loc;           // Location of pixel 0, 0
+    private Vec3 pixelDeltaU;           // Offset of pixel to the right
+    private Vec3 pixelDeltaV;           // Offset of pixel below
 
-    public double aspectRatio = 1.0;   // Ratio of image width over height
-    public int imageWidth = 100;       // Rendered image width in pixel count
+    public double aspectRatio = 1.0;    // Ratio of image width over height
+    public int imageWidth = 100;        // Rendered image width in pixel count
+    public int samplesPerPixel = 10;    // Count of random samples for each pixel
 
     public Camera() {
     }
@@ -26,6 +28,9 @@ public class Camera {
     private void initialize() {
         imageHeight = (int) (imageWidth / aspectRatio);
         imageHeight = Math.max(1, imageHeight);
+
+        pixelSampleScale = 1.0 / samplesPerPixel;
+
         center = Vec3.zero;
 
         // Determine viewport dimensions
@@ -61,6 +66,24 @@ public class Camera {
         return new Color(1.0, 1.0, 1.0).multiply(1.0 - a).add(new Color(0.5, 0.7, 1.0).multiply(a));
     }
 
+    private Ray getRay(int i, int j) {
+        // 构造一个相机光线，从原点出发，随机采样
+        // 像素位置i, j周围的点
+        Vec3 offset = sampleSquare();
+        Vec3 pixelSample = pixel00_loc
+                .add(pixelDeltaU.multiply(i+offset.x()))
+                .add(pixelDeltaV.multiply(j+offset.y()));
+        Vec3 rayOrigin = center;
+        Vec3 rayDirection = pixelSample.subtract(rayOrigin);
+
+        return new Ray(rayOrigin, rayDirection);
+    }
+
+    private static Vec3 sampleSquare() {
+        // Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
+        return new Vec3(CommonUtils.randomDouble() - 0.5, CommonUtils.randomDouble() - 0.5, 0);
+    }
+
 
     public void render(Hittable world) {
         initialize();
@@ -73,19 +96,17 @@ public class Camera {
             System.out.flush();
 
             for (int i = 0; i < imageWidth; i++) {
-                Vec3 pixelCenter = pixel00_loc.add(pixelDeltaU.multiply(i))
-                        .add(pixelDeltaV.multiply(j));// 像素中心点
-                Vec3 rayDirection = pixelCenter.subtract(center);// 视线方向
-                Ray r = new Ray(center, rayDirection);
-
-                Color color = rayColor(r, world);
-                image.setRGB(i, j, color.getRgb());
+                Color pixelColor = Color.WHITE;
+                for (int sample = 0; sample < samplesPerPixel; sample++) {
+                    Ray r = getRay(i, j);
+                    pixelColor = pixelColor.add(rayColor(r, world));
+                }
+                image.setRGB(i, j, pixelColor.multiply(pixelSampleScale).getRgb());
             }
         }
 
         System.out.println("\rDone.                 ");
         FileUtils.saveFileToJPG(image);
-
     }
 
 

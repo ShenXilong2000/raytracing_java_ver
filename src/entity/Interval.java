@@ -31,4 +31,14 @@ public class Interval {
     public boolean surrounds(double x) {
         return x > min && x < max;
     }
+
+    public double clamp(double x) {
+        if (x < min) {
+            return min;
+        }
+        if (x > max) {
+            return max;
+        }
+        return x;
+    }
 }
