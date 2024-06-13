@@ -84,6 +84,26 @@ public class Camera {
         return new Vec3(CommonUtils.randomDouble() - 0.5, CommonUtils.randomDouble() - 0.5, 0);
     }
 
+    private void progressBar(int i, int total) {
+        int per = (int)(1.0 * i / total * 100 / 5) ;
+        StringBuilder bar = new StringBuilder();
+        for (int j = 0; j < per; j++) {
+            bar.append("@");
+        }
+        for (int j = 0; j < 20 - per - 1; j++) {
+            bar.append("-");
+        }
+        StringBuilder remainNumber = new StringBuilder();
+//        (total - i - 1)
+        for (int j = 0; j <  5 - String.valueOf(total - i - 1).length(); j++) {
+            remainNumber.append(" ");
+        }
+        remainNumber.append(total - i - 1);
+        System.out.print("\rScanLines remaining: " + remainNumber + " ");
+        System.out.print("[" + bar + "]  ");
+        System.out.flush();
+    }
+
 
     public void render(Hittable world) {
         initialize();
@@ -91,10 +111,7 @@ public class Camera {
         // Render
         BufferedImage image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
         for (int j = 0; j < imageHeight; j++) {
-
-            System.out.print("\rScanlines remaining: " + (imageHeight - j) + " ");
-            System.out.flush();
-
+            progressBar(j, imageHeight);
             for (int i = 0; i < imageWidth; i++) {
                 Color pixelColor = Color.WHITE;
                 for (int sample = 0; sample < samplesPerPixel; sample++) {
@@ -105,9 +122,9 @@ public class Camera {
             }
         }
 
-        System.out.println("\rDone.                 ");
         FileUtils.saveFileToJPG(image);
     }
+
 
 
 }

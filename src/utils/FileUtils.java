@@ -41,9 +41,9 @@ public class FileUtils {
         // 将图像写入文件
         try {
             ImageIO.write(image, "BMP", file);
-            System.out.println("Image has been written to the file.");
+            System.out.println("\nImage has been written to the file.");
         } catch (IOException e) {
-            System.out.println("An error occurred while writing the image.");
+            System.out.println("\nAn error occurred while writing the image.");
             e.printStackTrace();
         }
     }
