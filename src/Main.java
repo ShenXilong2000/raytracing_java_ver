@@ -18,7 +18,7 @@ public class Main {
         Camera camera = new Camera();
         camera.aspectRatio = 16.0 / 9.0;
         camera.imageWidth = 400;
-        camera.samplesPerPixel = 100;
+        camera.samplesPerPixel = 10;
         camera.render(world);
     }
 }

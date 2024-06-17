@@ -1,5 +1,7 @@
 package entity;
 
+import utils.CommonUtils;
+
 /**
  * @Author sxl
  * @Date 2024/5/30 17:41
@@ -82,5 +84,37 @@ public class Vec3 {
 
     public Vec3 oppositeVector () {
         return zero.subtract(this);
+    }
+
+
+    public static Vec3 random() {
+        return new Vec3(CommonUtils.randomDouble(), CommonUtils.randomDouble(), CommonUtils.randomDouble());
+    }
+
+    public static Vec3 random(double min, double max) {
+        return new Vec3(CommonUtils.randomDouble(min, max), CommonUtils.randomDouble(min, max), CommonUtils.randomDouble(min, max));
+    }
+
+
+    public static Vec3 randomInUnitSphere() {
+        while (true) {
+            Vec3 p = Vec3.random(-1, 1);
+            if (p.lengthSquared() < 1) {
+                return p;
+            }
+        }
+    }
+
+    public static Vec3 randomUnitVector() {
+        return randomInUnitSphere().unitVector();
+    }
+
+    public static Vec3 randomOnHemisphere(Vec3 normal) {
+        Vec3 onUnitSphere = randomUnitVector();
+        if (onUnitSphere.dot(normal) > 0.0) {
+            return onUnitSphere;
+        } else {
+            return onUnitSphere.oppositeVector();
+        }
     }
 }

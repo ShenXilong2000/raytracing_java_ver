@@ -19,4 +19,24 @@ public class CommonUtils {
         // [min, max)
         return min + (max-min)*randomDouble();
     }
+
+    // 进度条
+    public static void progressBar(int i, int total) {
+        int per = (int)(1.0 * i / total * 100 / 5) ;
+        StringBuilder bar = new StringBuilder();
+        for (int j = 0; j < per; j++) {
+            bar.append("@");
+        }
+        for (int j = 0; j < 20 - per - 1; j++) {
+            bar.append("-");
+        }
+        StringBuilder remainNumber = new StringBuilder();
+        for (int j = 0; j <  5 - String.valueOf(total - i - 1).length(); j++) {
+            remainNumber.append(" ");
+        }
+        remainNumber.append(total - i - 1);
+        System.out.print("\rScanLines remaining: " + remainNumber + " ");
+        System.out.print("[" + bar + "]  ");
+        System.out.flush();
+    }
 }
