@@ -21,6 +21,7 @@ public class Camera {
     public double aspectRatio = 1.0;    // Ratio of image width over height
     public int imageWidth = 100;        // Rendered image width in pixel count
     public int samplesPerPixel = 10;    // Count of random samples for each pixel
+    public int maxDepth = 10;           // Maximum number of ray bounces into scene
 
     public Camera() {
     }
@@ -53,12 +54,16 @@ public class Camera {
         pixel00_loc = pixelDeltaU.add(pixelDeltaV).divide(2).add(viewportUpperLeft);
     }
 
-    private static Color rayColor(Ray ray, Hittable world) {
+    private static Color rayColor(Ray ray, int depth, Hittable world) {
+        if (depth <= 0) {
+            return Color.BLACK;
+        }
+
         // 世界物体
         HitRecord hitRecord = world.hit(ray, new Interval(0, CommonUtils.INFINITY));
         if (hitRecord != null) {
             Vec3 direction = Vec3.randomOnHemisphere(hitRecord.normal);
-            return rayColor(new Ray(hitRecord.p, direction), world).multiply(0.5);
+            return rayColor(new Ray(hitRecord.p, direction), depth-1, world).multiply(0.5);
         }
 
         // 背景
@@ -99,7 +104,7 @@ public class Camera {
                 Color pixelColor = Color.WHITE;
                 for (int sample = 0; sample < samplesPerPixel; sample++) {
                     Ray r = getRay(i, j);
-                    pixelColor = pixelColor.add(rayColor(r, world));
+                    pixelColor = pixelColor.add(rayColor(r, maxDepth, world));
                 }
                 image.setRGB(i, j, pixelColor.multiply(pixelSampleScale).getRgb());
             }
