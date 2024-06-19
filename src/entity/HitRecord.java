@@ -7,6 +7,7 @@ package entity;
 public class HitRecord {
     public Vec3 p;
     public Vec3 normal;
+    public Material material;
     public double t;
     public boolean frontFace;
 

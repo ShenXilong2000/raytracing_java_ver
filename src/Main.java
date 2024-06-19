@@ -2,10 +2,6 @@ import entity.*;
 import entity.object.HittableList;
 import entity.object.Sphere;
 import modules.Camera;
-import utils.CommonUtils;
-import utils.FileUtils;
-
-import java.awt.image.BufferedImage;
 
 public class Main {
 

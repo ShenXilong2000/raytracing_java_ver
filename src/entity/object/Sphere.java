@@ -9,6 +9,7 @@ import entity.*;
 public class Sphere extends Hittable {
     private final Vec3 center;
     private final double radius;
+    private Material material;
 
     public Sphere(Vec3 center, double radius) {
         this.center = center;
@@ -43,6 +44,7 @@ public class Sphere extends Hittable {
         rec.p = ray.at(rec.t);
         Vec3 outwardNormal = rec.p.subtract(center).divide(radius);
         rec.setFaceNormal(ray, outwardNormal);
+        rec.material = material;
 
         return rec;
     }

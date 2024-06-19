@@ -65,6 +65,11 @@ public class Vec3 {
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
 
+    public boolean nearZero() {
+        double s = 1e-8;
+        return (Math.abs(this.x) < s) && (Math.abs(this.y) < s) && (Math.abs(this.z) < s);
+    }
+
     public double dot(Vec3 v) {
         return this.x * v.x + this.y * v.y + this.z * v.z;
     }
