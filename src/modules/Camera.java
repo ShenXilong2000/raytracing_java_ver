@@ -62,8 +62,8 @@ public class Camera {
         // 世界物体
         HitRecord hitRecord = world.hit(ray, new Interval(0.001, CommonUtils.INFINITY));
         if (hitRecord != null) {
-            Vec3 direction = Vec3.randomOnHemisphere(hitRecord.normal);
-            return rayColor(new Ray(hitRecord.p, direction), depth-1, world).multiply(0.5);
+            Vec3 direction = hitRecord.normal.add(Vec3.randomUnitVector());
+            return rayColor(new Ray(hitRecord.p, direction), depth-1, world).multiply(0.1);
         }
 
         // 背景

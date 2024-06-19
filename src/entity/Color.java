@@ -26,15 +26,15 @@ public class Color extends Vec3{
     }
 
     public int r() {
-        return (int) (255 * interval.clamp(this.x()));
+        return (int) (255 * interval.clamp(linearToGamma(this.x())));
     }
 
     public int g() {
-        return (int) (255 * interval.clamp(this.y()));
+        return (int) (255 * interval.clamp(linearToGamma(this.y())));
     }
 
     public int b() {
-        return (int) (255 * interval.clamp(this.z()));
+        return (int) (255 * interval.clamp(linearToGamma(this.z())));
     }
 
 
@@ -60,5 +60,12 @@ public class Color extends Vec3{
                 ((this.g() & 0xFF) << 8) |
                 ((this.b() & 0xFF) << 0);
 
+    }
+
+    private double linearToGamma(double linearComponent) {
+        if (linearComponent > 0) {
+            return Math.sqrt(linearComponent);
+        }
+        return 0;
     }
 }
