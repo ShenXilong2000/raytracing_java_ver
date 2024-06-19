@@ -7,7 +7,11 @@ package entity;
 public abstract class Material {
     public Material() {}
 
-    public boolean scatter (Ray rayIn, HitRecord record, Color attenuation, Ray scattered) {
-        return false;
+    public Ray scatter (Ray rayIn, HitRecord record) {
+        return null;
+    }
+
+    public Color getAttenuationColor() {
+        return Color.WHITE;
     }
 }

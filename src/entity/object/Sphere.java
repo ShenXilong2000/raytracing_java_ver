@@ -9,11 +9,12 @@ import entity.*;
 public class Sphere extends Hittable {
     private final Vec3 center;
     private final double radius;
-    private Material material;
+    private final Material material;
 
-    public Sphere(Vec3 center, double radius) {
+    public Sphere(Vec3 center, double radius, Material material) {
         this.center = center;
         this.radius = Math.max(radius, 0);
+        this.material = material;
     }
 
     @Override

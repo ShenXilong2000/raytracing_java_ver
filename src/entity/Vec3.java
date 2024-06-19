@@ -122,4 +122,9 @@ public class Vec3 {
             return onUnitSphere.oppositeVector();
         }
     }
+
+    public static Vec3 reflect(Vec3 v, Vec3 n) {
+        // v - 2*dot(v, n)*n
+        return v.subtract(n.multiply(2).multiply(v.dot(n)));
+    }
 }

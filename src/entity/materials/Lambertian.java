@@ -15,15 +15,18 @@ public class Lambertian extends Material {
     }
 
     @Override
-    public boolean scatter(Ray rayIn, HitRecord record, Color attenuation, Ray scattered) {
+    public Ray scatter(Ray rayIn, HitRecord record) {
         Vec3 scatterDirection = record.normal.add(Vec3.randomUnitVector());
 
         if (scatterDirection.nearZero()) {
             scatterDirection = record.normal;
         }
 
-        scattered = new Ray(record.p, scatterDirection);
-        attenuation = albedo;
-        return true;
+        return new Ray(record.p, scatterDirection);
+    }
+
+    @Override
+    public Color getAttenuationColor() {
+        return albedo;
     }
 }

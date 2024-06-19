@@ -62,8 +62,12 @@ public class Camera {
         // 世界物体
         HitRecord hitRecord = world.hit(ray, new Interval(0.001, CommonUtils.INFINITY));
         if (hitRecord != null) {
-            Vec3 direction = hitRecord.normal.add(Vec3.randomUnitVector());
-            return rayColor(new Ray(hitRecord.p, direction), depth-1, world).multiply(0.1);
+            Ray scattered = hitRecord.material.scatter(ray, hitRecord);
+            Color attenuation = hitRecord.material.getAttenuationColor();
+            if (scattered != null) {
+                return attenuation.multiply(rayColor(scattered, depth-1, world));
+            }
+            return attenuation;
         }
 
         // 背景

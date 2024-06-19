@@ -50,6 +50,10 @@ public class Color extends Vec3{
         return new Color(super.multiply(t));
     }
 
+    public Color multiply(Color c) {
+        return new Color(super.multiply(c));
+    }
+
     public void writeColor() {
         System.out.println(this.r() + " " + this.g() + " " + this.b());
     }
