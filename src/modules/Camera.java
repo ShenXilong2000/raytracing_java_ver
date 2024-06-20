@@ -67,7 +67,7 @@ public class Camera {
             if (scattered != null) {
                 return attenuation.multiply(rayColor(scattered, depth-1, world));
             }
-            return attenuation;
+            return Color.WHITE;
         }
 
         // 背景
