@@ -1,4 +1,5 @@
 import entity.*;
+import entity.materials.Dielectric;
 import entity.materials.Lambertian;
 import entity.materials.Metal;
 import entity.object.HittableList;
@@ -13,7 +14,7 @@ public class Main {
 
         Material materialGround = new Lambertian(new Color(0.8, 0.8, 0.0));
         Material materialCenter = new Lambertian(new Color(0.1, 0.2, 0.5));
-        Material materialLeft = new Metal(new Color(0.8, 0.8, 0.8), 0.3);
+        Material materialLeft = new Dielectric(1.5);
         Material materialRight = new Metal(new Color(0.8, 0.6, 0.2), 1.0);
 
         world.add(new Sphere(new Vec3(0.0, -100.5, -1.0), 100.0, materialGround));
