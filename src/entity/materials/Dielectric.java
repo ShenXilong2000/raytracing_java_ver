@@ -22,13 +22,19 @@ public class Dielectric extends Material {
         double ri = record.frontFace ? (1.0/refractionIndex) : refractionIndex;
 
         Vec3 unitDirection = rayIn.direction().unitVector();
-        Vec3 refracted = Vec3.refract(unitDirection, record.normal, ri);
+        double cosTheta = Math.min(unitDirection.oppositeVector().dot(record.normal), 1.0);
+        double sinTheta = Math.sqrt(1.0 - cosTheta*cosTheta);
 
-        return new Ray(record.p, refracted);
+        boolean cannotRefract = ri * sinTheta > 1.0;
+        Vec3 direction;
+
+        if (cannotRefract) {
+            direction = Vec3.reflect(unitDirection, record.normal);
+        } else {
+            direction = Vec3.refract(unitDirection, record.normal, ri);
+        }
+
+        return new Ray(record.p, direction);
     }
 
-    @Override
-    public Color getAttenuationColor() {
-        return Color.BLACK;
-    }
 }

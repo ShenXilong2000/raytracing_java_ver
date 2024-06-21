@@ -12,6 +12,6 @@ public abstract class Material {
     }
 
     public Color getAttenuationColor() {
-        return Color.WHITE;
+        return Color.BLACK;
     }
 }
