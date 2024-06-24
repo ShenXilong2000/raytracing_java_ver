@@ -22,6 +22,7 @@ public class Camera {
     public int imageWidth = 100;        // Rendered image width in pixel count
     public int samplesPerPixel = 10;    // Count of random samples for each pixel
     public int maxDepth = 10;           // Maximum number of ray bounces into scene
+    public double vfov = 90;            // Vertical view angle (field iof view)
 
     public Camera() {
     }
@@ -36,7 +37,9 @@ public class Camera {
 
         // Determine viewport dimensions
         double focalLength = 1.0;
-        double viewportHeight = 2.0;
+        double theta = CommonUtils.degreesToRadians(vfov);
+        double h = Math.tan(theta / 2);
+        double viewportHeight = 2.0 * h * focalLength;
         double viewportWidth = viewportHeight * ((double) imageWidth / imageHeight);
 
         // 计算横向和竖向视口边缘的向量
