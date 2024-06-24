@@ -17,12 +17,17 @@ public class Camera {
     private Vec3 pixel00_loc;           // Location of pixel 0, 0
     private Vec3 pixelDeltaU;           // Offset of pixel to the right
     private Vec3 pixelDeltaV;           // Offset of pixel below
+    private Vec3 u, v, w;               // Camera frame basis vectors
 
     public double aspectRatio = 1.0;    // Ratio of image width over height
     public int imageWidth = 100;        // Rendered image width in pixel count
     public int samplesPerPixel = 10;    // Count of random samples for each pixel
     public int maxDepth = 10;           // Maximum number of ray bounces into scene
-    public double vfov = 90;            // Vertical view angle (field iof view)
+
+    public double vFov = 90;            // Vertical view angle (field iof view)
+    public Vec3 lookFrom = new Vec3(0, 0, 0);   // Point camera is looking from
+    public Vec3 lookAt = new Vec3(0, 0, -1);    // Point camera is looking at
+    public Vec3 vUp = new Vec3(0, 1, 0);        // Camera-relative "up" direction
 
     public Camera() {
     }
@@ -33,25 +38,30 @@ public class Camera {
 
         pixelSampleScale = 1.0 / samplesPerPixel;
 
-        center = Vec3.zero;
+        center = lookFrom;
 
         // Determine viewport dimensions
-        double focalLength = 1.0;
-        double theta = CommonUtils.degreesToRadians(vfov);
+        double focalLength = (lookFrom.subtract(lookAt)).length();
+        double theta = CommonUtils.degreesToRadians(vFov);
         double h = Math.tan(theta / 2);
         double viewportHeight = 2.0 * h * focalLength;
         double viewportWidth = viewportHeight * ((double) imageWidth / imageHeight);
 
+        // 从相机坐标系中计算单位u，v,w
+        w = (lookFrom.subtract(lookAt)).unitVector();
+        u = vUp.cross(w).unitVector();
+        v = w.cross(u).unitVector();
+
         // 计算横向和竖向视口边缘的向量
-        Vec3 viewportU = new Vec3(viewportWidth, 0,0);
-        Vec3 viewportV = new Vec3(0, -viewportHeight, 0);
+        Vec3 viewportU = u.multiply(viewportWidth);
+        Vec3 viewportV = v.oppositeVector().multiply(viewportHeight);
 
         // 计算水平方向和垂直视口边缘的向量
         pixelDeltaU = viewportU.divide(imageWidth);
         pixelDeltaV = viewportV.divide(imageHeight);
 
         // 计算左上角的像素
-        Vec3 viewportUpperLeft = center.subtract(new Vec3(0, 0, focalLength))
+        Vec3 viewportUpperLeft = center.subtract(w.multiply(focalLength))
                 .subtract(viewportU.divide(2))
                 .subtract(viewportV.divide(2));
         pixel00_loc = pixelDeltaU.add(pixelDeltaV).divide(2).add(viewportUpperLeft);
