@@ -5,6 +5,7 @@ import utils.CommonUtils;
 import utils.FileUtils;
 
 import java.awt.image.BufferedImage;
+import java.security.acl.AclEntry;
 
 /**
  * @Author sxl
@@ -18,6 +19,8 @@ public class Camera {
     private Vec3 pixelDeltaU;           // Offset of pixel to the right
     private Vec3 pixelDeltaV;           // Offset of pixel below
     private Vec3 u, v, w;               // Camera frame basis vectors
+    private Vec3 deFocusDistU;          // DeFocus dist horizontal radius
+    private Vec3 deFocusDistV;          // DeFocus dist vertical radius
 
     public double aspectRatio = 1.0;    // Ratio of image width over height
     public int imageWidth = 100;        // Rendered image width in pixel count
@@ -28,6 +31,9 @@ public class Camera {
     public Vec3 lookFrom = new Vec3(0, 0, 0);   // Point camera is looking from
     public Vec3 lookAt = new Vec3(0, 0, -1);    // Point camera is looking at
     public Vec3 vUp = new Vec3(0, 1, 0);        // Camera-relative "up" direction
+
+    public double deFocusAngle = 0;     // Variation angle of rays through each pixel
+    public double focusDist = 10;       // Distance from camera lookFrom point to plane of perfect focus
 
     public Camera() {
     }
@@ -41,10 +47,9 @@ public class Camera {
         center = lookFrom;
 
         // Determine viewport dimensions
-        double focalLength = (lookFrom.subtract(lookAt)).length();
         double theta = CommonUtils.degreesToRadians(vFov);
         double h = Math.tan(theta / 2);
-        double viewportHeight = 2.0 * h * focalLength;
+        double viewportHeight = 2.0 * h * focusDist;
         double viewportWidth = viewportHeight * ((double) imageWidth / imageHeight);
 
         // 从相机坐标系中计算单位u，v,w
@@ -61,10 +66,15 @@ public class Camera {
         pixelDeltaV = viewportV.divide(imageHeight);
 
         // 计算左上角的像素
-        Vec3 viewportUpperLeft = center.subtract(w.multiply(focalLength))
+        Vec3 viewportUpperLeft = center.subtract(w.multiply(focusDist))
                 .subtract(viewportU.divide(2))
                 .subtract(viewportV.divide(2));
         pixel00_loc = pixelDeltaU.add(pixelDeltaV).divide(2).add(viewportUpperLeft);
+
+        // 计算相机聚焦散射基本向量
+        double deFocusRadius = focusDist * Math.tan(CommonUtils.degreesToRadians(deFocusAngle / 2));
+        deFocusDistU = u.multiply(deFocusRadius);
+        deFocusDistV = v.multiply(deFocusRadius);
     }
 
     private static Color rayColor(Ray ray, int depth, Hittable world) {
@@ -90,13 +100,13 @@ public class Camera {
     }
 
     private Ray getRay(int i, int j) {
-        // 构造一个相机光线，从原点出发，随机采样
+        // 构造一个相机光线，从聚焦散射出发，随机采样
         // 像素位置i, j周围的点
         Vec3 offset = sampleSquare();
         Vec3 pixelSample = pixel00_loc
                 .add(pixelDeltaU.multiply(i+offset.x()))
                 .add(pixelDeltaV.multiply(j+offset.y()));
-        Vec3 rayOrigin = center;
+        Vec3 rayOrigin = (deFocusAngle <= 0)? center : this.deFocusDiskSample();
         Vec3 rayDirection = pixelSample.subtract(rayOrigin);
 
         return new Ray(rayOrigin, rayDirection);
@@ -107,7 +117,10 @@ public class Camera {
         return new Vec3(CommonUtils.randomDouble() - 0.5, CommonUtils.randomDouble() - 0.5, 0);
     }
 
-
+    private Vec3 deFocusDiskSample() {
+        Vec3 p = Vec3.randomInUnitDisk();
+        return center.add(deFocusDistU.multiply(p.x())).add(deFocusDistV.multiply(p.y()));
+    }
 
 
     public void render(Hittable world) {

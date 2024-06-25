@@ -37,6 +37,9 @@ public class Main {
         camera.lookAt = new Vec3(0, 0, -1);
         camera.vUp = new Vec3(0, 1, 0);
 
+        camera.deFocusAngle = 10.0;
+        camera.focusDist = 3.4;
+
         camera.render(world);
     }
 }

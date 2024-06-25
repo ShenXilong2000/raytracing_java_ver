@@ -87,6 +87,15 @@ public class Vec3 {
         return this.divide(this.length());
     }
 
+    public static Vec3 randomInUnitDisk() {
+        while (true) {
+            Vec3 p = new Vec3(CommonUtils.randomDouble(-1, 1), CommonUtils.randomDouble(-1, 1), 0);
+            if (p.lengthSquared() < 1) {
+                return p;
+            }
+        }
+    }
+
     public Vec3 oppositeVector () {
         return zero.subtract(this);
     }
